@@ -33,9 +33,9 @@ class IndexController implements IBaseController {
         userData = new UserDataFromDB(profileId);
         break;
       default:
-        res.status(404);
+        res.status(400);
         res.send({
-          status: `Data from <${dataFrom}> not found`
+          status: `Data from should be request, file or db. <${dataFrom}> was provided`
         });
         return;
         break;
