@@ -2,7 +2,10 @@ import * as express from 'express';
 import { Request, Response } from 'express';
 
 import { UserDocument } from '../index/document';
-import { UserData, UserDataFromRequest, UserDataFromFile, UserDataFromDB } from '../index/user';
+import {
+  UserData,
+  UserDataFactory
+} from '../index/user';
 
 import IBaseController from '../interfaces/base-controller.interface';
 
@@ -21,24 +24,13 @@ class IndexController implements IBaseController {
     const profileId = req.body.profileId;
     const dataFrom = req.body.dataFrom;
 
-    let userData: UserData;
-    switch (dataFrom) {
-      case 'request':
-        userData = new UserDataFromRequest(profileId);
-        break;
-      case 'file':
-        userData = new UserDataFromFile(profileId);
-        break;
-      case 'db':
-        userData = new UserDataFromDB(profileId);
-        break;
-      default:
-        res.status(404);
-        res.send({
-          status: `Data from <${dataFrom}> not found`
-        });
-        return;
-        break;
+    let userData: UserData | undefined;
+    userData = UserDataFactory.getUserData(dataFrom, profileId);
+
+    if (userData === undefined) {
+      res.status(404);
+      res.send({ status: `Data from <${dataFrom}> not found` });
+      return;
     }
 
     const userDocument = new UserDocument(userData);

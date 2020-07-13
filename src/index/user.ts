@@ -362,4 +362,27 @@ class UserDataFromDB implements UserData {
     }
 }
 
-export { User, UserData, UserDataFromRequest, UserDataFromFile, UserDataFromDB };
+class UserDataFactory {
+
+    static getUserData(dataFrom: string, profileId: string): UserData | undefined {
+        let userData: UserData | undefined;
+        switch (dataFrom) {
+            case 'request':
+                userData = new UserDataFromRequest(profileId);
+                break;
+            case 'file':
+                userData = new UserDataFromFile(profileId);
+                break;
+            case 'db':
+                userData = new UserDataFromDB(profileId);
+                break;
+            default:
+                userData = undefined;
+                break;
+        }
+
+        return userData;
+    }
+}
+
+export { User, UserData, UserDataFromRequest, UserDataFromFile, UserDataFromDB, UserDataFactory };
