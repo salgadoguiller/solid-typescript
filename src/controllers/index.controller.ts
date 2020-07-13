@@ -6,6 +6,11 @@ import {
   UserData,
   UserDataFactory
 } from '../index/user';
+import {
+  ErrorSubject,
+  ErrorByEmailObserver,
+  WriteErrorObserver
+} from '../index/error';
 
 import IBaseController from '../interfaces/base-controller.interface';
 
@@ -24,22 +29,36 @@ class IndexController implements IBaseController {
     const profileId = req.body.profileId;
     const dataFrom = req.body.dataFrom;
 
+    const subj = new ErrorSubject();
+    new ErrorByEmailObserver(subj);
+    new WriteErrorObserver(subj);
+
     let userData: UserData | undefined;
     userData = UserDataFactory.getUserData(dataFrom, profileId);
 
+    let status = 200;
+    let statusMessage = 'Success';
+
     if (userData === undefined) {
-      res.status(404);
-      res.send({ status: `Data from <${dataFrom}> not found` });
+      status = 404;
+      statusMessage = `Data from <${dataFrom}> not found`;
+
+      subj.error = statusMessage;
       return;
+    } else {
+      const userDocument = new ProxyUserDocument(userData);
+      const correctlyIndexed = userDocument.index();
+
+      if (!correctlyIndexed) {
+        status = 500;
+        statusMessage = `User <${profileId}> can not be indexed`;
+
+        subj.error = statusMessage;
+      }
     }
 
-    const userDocument = new ProxyUserDocument(userData);
-    const correctlyIndexed = userDocument.index();
-    console.log(correctlyIndexed);
-
-    res.send({
-      status: 'Success'
-    });
+    res.status(status);
+    res.send({ status: statusMessage });
   }
 }
 
