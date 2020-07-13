@@ -1,7 +1,7 @@
 import * as express from 'express';
 import { Request, Response } from 'express';
 
-import { UserDocument } from '../index/document';
+import { ProxyUserDocument } from '../index/document';
 import {
   UserData,
   UserDataFactory
@@ -33,8 +33,9 @@ class IndexController implements IBaseController {
       return;
     }
 
-    const userDocument = new UserDocument(userData);
-    userDocument.index();
+    const userDocument = new ProxyUserDocument(userData);
+    const correctlyIndexed = userDocument.index();
+    console.log(correctlyIndexed);
 
     res.send({
       status: 'Success'

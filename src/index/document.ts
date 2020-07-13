@@ -1,6 +1,10 @@
 import { User, UserData } from "./user";
 
-class UserDocument {
+interface Doc {
+    index(): boolean;
+}
+
+class UserDocument implements Doc {
     private user: User;
 
     constructor(userData: UserData) {
@@ -15,4 +19,21 @@ class UserDocument {
     }
 }
 
-export { UserDocument }
+class ProxyUserDocument implements Doc {
+    private userData: UserData;
+
+    constructor(userData: UserData) {
+        this.userData = userData;
+    }
+    
+    public index(): boolean {
+        if (!this.userData.isPublic()) {
+            return false;
+        }
+
+        const realUserDocument = new UserDocument(this.userData);
+        return realUserDocument.index();
+    }
+}
+
+export { Doc, UserDocument, ProxyUserDocument }

@@ -42,6 +42,7 @@ interface User {
 
 interface UserData {
     get(): User;
+    isPublic(): boolean;
 }
 
 class UserDataFromRequest implements UserData {
@@ -147,6 +148,10 @@ class UserDataFromRequest implements UserData {
                 'prueba'
             ]
         };
+    }
+
+    public isPublic(): boolean {
+        return false;
     }
 }
 
@@ -254,6 +259,10 @@ class UserDataFromFile implements UserData {
             ]
         };
     }
+
+    public isPublic(): boolean {
+        return false;
+    }
 }
 
 class UserDataFromDB implements UserData {
@@ -359,6 +368,10 @@ class UserDataFromDB implements UserData {
                 'prueba'
             ]
         };
+    }
+
+    public isPublic(): boolean {
+        return false;
     }
 }
 
