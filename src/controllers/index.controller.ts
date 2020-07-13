@@ -44,7 +44,6 @@ class IndexController implements IBaseController {
       statusMessage = `Data from <${dataFrom}> not found`;
 
       subj.error = statusMessage;
-      return;
     } else {
       const userDocument = new ProxyUserDocument(userData);
       const correctlyIndexed = userDocument.index();
