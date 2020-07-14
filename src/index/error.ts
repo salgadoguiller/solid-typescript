@@ -53,10 +53,10 @@ class ErrorSubject {
         this._observers.push(observer);
     }
 
-    public notifyAllObservers(): void {
+    private notifyAllObservers(): void {
         for (let index = 0; index < this._observers.length; index++) {
             const element = this._observers[index];
-            element.error();            
+            element.error();          
         }
     }
 }
